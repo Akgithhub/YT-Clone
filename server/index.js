@@ -42,7 +42,7 @@ app.use((err, req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("YouTube Clone !!");
+  res.send("YouTube Clone !!")
 });
 
 app.listen(port || 3000);

@@ -1,14 +1,29 @@
 import express from "express";
-import { test } from "../controllers/userController.js";
+import MiddleWare from "../middleware/Middleware.js";
+import {
+  deleteUser,
+  getUser,
+  likeUservideo,
+  SubscribeUser,
+  unlikeUservideo,
+  unsubscribeUser,
+  updateUser,
+} from "../controllers/userController.js";
 
 const userRouter = express.Router();
 // Update User
-userRouter.put()
+userRouter.put("/update/:id", MiddleWare, updateUser);
 // Delete User
+userRouter.delete("/delete/:id", MiddleWare, deleteUser);
 // Get a User
+userRouter.get("/finduser/:id", MiddleWare, getUser);
 // Subcribe user
+userRouter.put("/sub/:id", MiddleWare, SubscribeUser);
 // unscribe user
+userRouter.put("/unsub/:id", MiddleWare, unsubscribeUser);
 // like a video
+userRouter.put("/line/:videoId", MiddleWare, likeUservideo);
 // dislike a video
+userRouter.put("/unlike/:videoId", MiddleWare, unlikeUservideo);
 
 export default userRouter;

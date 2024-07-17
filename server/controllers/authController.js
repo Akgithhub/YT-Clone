@@ -1,9 +1,8 @@
-import mongoose from "mongoose";
 import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { configDotenv } from "dotenv";
-import cookie from "cookie-parser";
+
 configDotenv();
 const secretKey = process.env.JWT_SECRET_KEY;
 const GenerateToken = (id) => {
@@ -48,7 +47,7 @@ const SignUp = async (req, res) => {
 // Sign In
 const SignIn = async (req, res) => {
   try {
-    const { email, password,...others } = req.body;
+    const { email, password } = req.body;
     const user = await userModel.findOne({ email: email });
     const matchPass = await bcrypt.compare(password, user.password);
     if (!matchPass) {
