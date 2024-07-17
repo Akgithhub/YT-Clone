@@ -1,13 +1,14 @@
 import express from "express";
-import { SignUp } from "../controllers/authController.js";
+import { SignIn, SignUp } from "../controllers/authController.js";
+import MiddleWare from "../middleware/Middleware.js";
 
 const authRouter = express.Router();
 
 // Create a User
-authRouter.post('/signup',SignUp)
+authRouter.post("/signup", SignUp);
 // Sign In
-authRouter.post('/signin')
+authRouter.post("/signin", MiddleWare, SignIn);
 // Google Sign In
-authRouter.post('/google')
+authRouter.post("/google");
 
 export default authRouter;

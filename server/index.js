@@ -6,6 +6,7 @@ import userRouter from "./router/userRouter.js";
 import commentRouter from "./router/commentRouter.js";
 import authRouter from "./router/authRouter.js";
 import videoRouter from "./router/videoRouter.js";
+import cookieParser from "cookie-parser";
 configDotenv();
 
 const port = process.env.PORT;
@@ -18,6 +19,8 @@ Connect_DB(db_url);
 
 // Middleware
 app.use(express.json());
+app.use(express.json());
+app.use(cookieParser());
 // app.use(bodyParser);
 app.use(cors());
 

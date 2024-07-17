@@ -3,11 +3,13 @@ import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { configDotenv } from "dotenv";
+import cookie from "cookie-parser";
 configDotenv();
 const secretKey = process.env.JWT_SECRET_KEY;
 const GenerateToken = (id) => {
   return jwt.sign({ id }, secretKey);
 };
+// Create a user
 const SignUp = async (req, res) => {
   const { email, password, name } = req.body;
   const emailExist = await userModel.findOne({ email: email });
@@ -26,12 +28,11 @@ const SignUp = async (req, res) => {
   };
   try {
     const newUser = await userModel.create(userData);
-    const token = await GenerateToken(newUser._id);
+
     if (newUser) {
       res.json({
         message: "User created successfully",
         user: newUser,
-        token: token,
       });
     }
     await newUser.save();
@@ -43,4 +44,34 @@ const SignUp = async (req, res) => {
     });
   }
 };
-export { SignUp };
+
+// Sign In
+const SignIn = async (req, res) => {
+  try {
+    const { email, password,...others } = req.body;
+    const user = await userModel.findOne({ email: email });
+    const matchPass = await bcrypt.compare(password, user.password);
+    if (!matchPass) {
+      res.json({
+        message: "Password is incorrect",
+      });
+    }
+
+    const Token = GenerateToken(user._id);
+    res.cookie("jwtToken", Token, { httpOnly: true });
+    res.json({
+      message: "User signed in successfully",
+      data: user,
+      token: Token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Error while signing in user",
+      error: error.message,
+    });
+  }
+};
+// Google Sign In
+
+export { SignUp, SignIn };
