@@ -88,7 +88,7 @@ const SubscribeUser = async (req, res, next) => {
     });
     if (subdata) {
       res.json({
-        message: "Subscribed successfully", 
+        message: "Subscribed successfully",
       });
     }
   } catch (error) {
@@ -100,7 +100,30 @@ const SubscribeUser = async (req, res, next) => {
   }
 };
 // unscribe user
-const unsubscribeUser = async (req, res, next) => {};
+const unsubscribeUser = async (req, res, next) => {
+  const uderid = req.user.id;
+  const unsubChannelid = req.params.id;
+  try {
+    await userModel.findById(uderid, {
+      $pull: { subscribedUsers: unsubChannelid },
+    });
+
+    const unsubdata = await userModel.findById(unsubChannelid, {
+      $dec: { subscribers: -1 },
+    });
+    if (unsubdata) {
+      res.json({
+        message: "UnSubscribed successfully",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "error while subscribing user",
+      error: error.message,
+    });
+  }
+};
 // like a video
 const likeUservideo = async (req, res, next) => {};
 // dislike a video
