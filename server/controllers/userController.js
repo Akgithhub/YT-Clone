@@ -79,11 +79,11 @@ const SubscribeUser = async (req, res, next) => {
   const uderid = req.user.id;
   const subChannelid = req.params.id;
   try {
-    await userModel.findById(uderid, {
+    await userModel.findByIdAndUpdate(uderid, {
       $push: { subscribedUsers: subChannelid },
     });
 
-    const subdata = await userModel.findById(subChannelid, {
+    const subdata = await userModel.findByIdAndUpdate(subChannelid, {
       $inc: { subscribers: 1 },
     });
     if (subdata) {
@@ -104,12 +104,12 @@ const unsubscribeUser = async (req, res, next) => {
   const uderid = req.user.id;
   const unsubChannelid = req.params.id;
   try {
-    await userModel.findById(uderid, {
+    await userModel.findByIdAndUpdate(uderid, {
       $pull: { subscribedUsers: unsubChannelid },
     });
 
-    const unsubdata = await userModel.findById(unsubChannelid, {
-      $dec: { subscribers: -1 },
+    const unsubdata = await userModel.findByIdAndUpdate(unsubChannelid, {
+      $inc: { subscribers: -1 },
     });
     if (unsubdata) {
       res.json({
@@ -119,7 +119,7 @@ const unsubscribeUser = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.json({
-      message: "error while subscribing user",
+      message: "error while Unsubscribing user",
       error: error.message,
     });
   }
@@ -128,6 +128,10 @@ const unsubscribeUser = async (req, res, next) => {
 const likeUservideo = async (req, res, next) => {};
 // dislike a video
 const unlikeUservideo = async (req, res, next) => {};
+const getalluser = async (req, res) => {
+  const data = await userModel.find();
+  res.json({ data: data });
+};
 export {
   updateUser,
   deleteUser,
@@ -136,4 +140,5 @@ export {
   unsubscribeUser,
   likeUservideo,
   unlikeUservideo,
+  getalluser,
 };

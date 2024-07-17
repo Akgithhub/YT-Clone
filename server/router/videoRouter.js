@@ -1,8 +1,12 @@
 import express from "express";
 import {
   addVideo,
+  addView,
   deleteVideo,
   getVideo,
+  randomVideo,
+  subVideo,
+  trendVideo,
   updateVideo,
 } from "../controllers/videoController.js";
 import MiddleWare from "../middleware/Middleware.js";
@@ -16,4 +20,16 @@ videoRouter.delete("/delete/:id", MiddleWare, deleteVideo);
 videoRouter.put("/update/:id", MiddleWare, updateVideo);
 // get a video
 videoRouter.get("/find/:id", MiddleWare, getVideo);
+// view in video
+videoRouter.put("/view/:id", addView);
+// Trending video
+videoRouter.get("/trend/", trendVideo);
+// Random video
+videoRouter.get("/random/", randomVideo);
+// tags vdo
+videoRouter.get("/tags/", randomVideo);
+// search vdo
+videoRouter.get("/search/", randomVideo);
+// Subscribed Video
+videoRouter.get("/sub", MiddleWare, subVideo);
 export default videoRouter;

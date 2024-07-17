@@ -2,6 +2,7 @@ import express from "express";
 import MiddleWare from "../middleware/Middleware.js";
 import {
   deleteUser,
+  getalluser,
   getUser,
   likeUservideo,
   SubscribeUser,
@@ -11,6 +12,7 @@ import {
 } from "../controllers/userController.js";
 
 const userRouter = express.Router();
+userRouter.get('/get',getalluser)
 // Update User
 userRouter.put("/update/:id", MiddleWare, updateUser);
 // Delete User
