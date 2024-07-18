@@ -56,7 +56,12 @@ const SignIn = async (req, res) => {
       });
     }
 
-    const Token = GenerateToken(user._id);
+    const Token = await GenerateToken(user._id);
+    if (!Token) {
+      res.json({
+        message: "token not generated",
+      });
+    }
     res.cookie("jwtToken", Token, { httpOnly: true });
     res.json({
       message: "User signed in successfully",

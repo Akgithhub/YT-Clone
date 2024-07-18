@@ -1,4 +1,5 @@
 import userModel from "../models/userModel.js";
+import videoModel from "../models/videoModel.js";
 // Update User
 const updateUser = async (req, res, next) => {
   const id = req.params.id;
@@ -125,9 +126,49 @@ const unsubscribeUser = async (req, res, next) => {
   }
 };
 // like a video
-const likeUservideo = async (req, res, next) => {};
+const likeUservideo = async (req, res, next) => {
+  const id = req.user.id;
+  const vdoid = req.params.id;
+  try {
+    const video = await videoModel.findByIdAndUpdate(vdoid, {
+      $addToSet: { likes: id },
+      $pull: { dislikes: id },
+    });
+    if (video) {
+      res.json({
+        message: "liked successfully",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "error while liking vdo",
+      error: error.message,
+    });
+  }
+};
 // dislike a video
-const unlikeUservideo = async (req, res, next) => {};
+const unlikeUservideo = async (req, res, next) => {
+  const id = req.user.id;
+  const vdoid = req.params.id;
+  try {
+    const video = await videoModel.findByIdAndUpdate(vdoid, {
+      $addToSet: { dislikes: id },
+      $pull: { likes: id },
+    });
+    if (video) {
+      res.json({
+        message: "dis liked successfully",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "error while dis liking vdo",
+      error: error.message,
+    });
+  }
+};
 const getalluser = async (req, res) => {
   const data = await userModel.find();
   res.json({ data: data });

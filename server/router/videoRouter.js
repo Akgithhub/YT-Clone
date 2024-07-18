@@ -3,6 +3,8 @@ import {
   addVideo,
   addView,
   deleteVideo,
+  getBySearch,
+  getByTags,
   getVideo,
   randomVideo,
   subVideo,
@@ -27,9 +29,9 @@ videoRouter.get("/trend/", trendVideo);
 // Random video
 videoRouter.get("/random/", randomVideo);
 // tags vdo
-videoRouter.get("/tags/", randomVideo);
+videoRouter.get("/tags/",getByTags );
 // search vdo
-videoRouter.get("/search/", randomVideo);
+videoRouter.get("/search/",getBySearch );
 // Subscribed Video
 videoRouter.get("/sub", MiddleWare, subVideo);
 export default videoRouter;

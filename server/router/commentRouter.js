@@ -1,7 +1,14 @@
 import express from "express";
-import { test } from "../controllers/commentController.js";
+import {
+  addComment,
+  deleteComment,
+  vdoComments,
+} from "../controllers/commentController.js";
+import MiddleWare from "../middleware/Middleware.js";
 
 const commentRouter = express.Router();
-commentRouter.get("/test", test);
+commentRouter.post("/add", MiddleWare, addComment);
+commentRouter.delete("/delete/:id", MiddleWare, deleteComment);
+commentRouter.get("/ofvdo/:videoId", MiddleWare, vdoComments);
 
 export default commentRouter;

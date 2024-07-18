@@ -146,7 +146,7 @@ const randomVideo = async (req, res) => {
 // Generating trending video
 const trendVideo = async (req, res) => {
   try {
-    // if -1 thenmose viewed videos or if +1 then most viwed videos
+    // if -1 then most viewed videos or if +1 then least viwed videos
     const video = await videoModel.find().sort({ views: -1 }).limit(40);
     if (video) {
       res.json({
@@ -185,6 +185,45 @@ const subVideo = async (req, res) => {
     });
   }
 };
+const getByTags = async (req, res) => {
+  const tags = req.query.tags.split(",");
+  console.log(tags);
+  try {
+    const vdo = await videoModel.find({ tags: { $in: tags } }).limit(5);
+    if (vdo) {
+      res.json({
+        message: "Video get successfully by Tags",
+        data: vdo,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "Error whille getting vdo by tags",
+      error: error.message,
+    });
+  }
+};
+const getBySearch = async (req, res) => {
+  const query = req.query.srch;
+  try {
+    const vdo = await videoModel
+      .find({ title: { $regex: query, $options: "i" } })
+      .limit(20);
+    if (vdo) {
+      res.json({
+        message: "Video get successfully by search",
+        data: vdo,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: "error while getting vdo by search",
+      error: error.message,
+    });
+  }
+};
 export {
   addVideo,
   updateVideo,
@@ -194,4 +233,6 @@ export {
   randomVideo,
   trendVideo,
   subVideo,
+  getByTags,
+  getBySearch,
 };
