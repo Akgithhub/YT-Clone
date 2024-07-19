@@ -12,7 +12,7 @@ import {
 } from "../controllers/userController.js";
 
 const userRouter = express.Router();
-userRouter.get('/get',getalluser)
+userRouter.get("/get", getalluser);
 // Update User
 userRouter.put("/update/:id", MiddleWare, updateUser);
 // Delete User
@@ -24,7 +24,7 @@ userRouter.put("/sub/:id", MiddleWare, SubscribeUser);
 // unscribe user
 userRouter.put("/unsub/:id", MiddleWare, unsubscribeUser);
 // like a video
-userRouter.put("/line/:videoId", MiddleWare, likeUservideo);
+userRouter.put("/like/:videoId", MiddleWare, likeUservideo);
 // dislike a video
 userRouter.put("/unlike/:videoId", MiddleWare, unlikeUservideo);
 

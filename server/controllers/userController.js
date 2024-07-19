@@ -25,7 +25,7 @@ const updateUser = async (req, res, next) => {
   }
 };
 // Delete User
-const deleteUser = async (req, res, next) => {
+const deleteUser = async (req, res) => {
   const id = req.params.id;
   const userid = req.user.id;
   if (id === userid) {
@@ -50,7 +50,7 @@ const deleteUser = async (req, res, next) => {
   }
 };
 // Get a User
-const getUser = async (req, res, next) => {
+const getUser = async (req, res) => {
   const id = req.params.id;
   const userid = req.user.id;
   if (id === userid) {
@@ -76,7 +76,7 @@ const getUser = async (req, res, next) => {
   }
 };
 // Subcribe user
-const SubscribeUser = async (req, res, next) => {
+const SubscribeUser = async (req, res) => {
   const uderid = req.user.id;
   const subChannelid = req.params.id;
   try {
@@ -101,7 +101,7 @@ const SubscribeUser = async (req, res, next) => {
   }
 };
 // unscribe user
-const unsubscribeUser = async (req, res, next) => {
+const unsubscribeUser = async (req, res) => {
   const uderid = req.user.id;
   const unsubChannelid = req.params.id;
   try {
@@ -126,31 +126,57 @@ const unsubscribeUser = async (req, res, next) => {
   }
 };
 // like a video
-const likeUservideo = async (req, res, next) => {
-  const id = req.user.id;
-  const vdoid = req.params.id;
+const likeUservideo = async (req, res) => {
+  const userId = req.user.id;
+  const videoId = req.params.videoId;
+
   try {
-    const video = await videoModel.findByIdAndUpdate(vdoid, {
-      $addToSet: { likes: id },
-      $pull: { dislikes: id },
-    });
+    // Log input parameters for debugging
+    console.log(`User ID: ${userId}`);
+    console.log(`Video ID: ${videoId}`);
+
+    // Find the video and update it
+    const video = await videoModel.findByIdAndUpdate(
+      videoId,
+      {
+        $addToSet: { likes: userId },
+        $pull: { dislikes: userId },
+      },
+      { new: true } // Return the updated document
+    );
+
+    // Log video details for debugging
+    console.log("Video after update:", video);
+
+    // Check if video was found and updated
     if (video) {
       res.json({
-        message: "liked successfully",
+        message: "Liked successfully",
+        data: video,
+      });
+    } else {
+      res.json({
+        message: "Error while liking video: Video not found",
       });
     }
   } catch (error) {
-    console.log(error);
+    // Log the error for debugging purposes
+    console.log("Error while liking video:", error);
+
+    // Respond with an error message
     res.json({
-      message: "error while liking vdo",
+      message: "Error while liking video",
       error: error.message,
     });
   }
 };
+
+export default likeUservideo;
+
 // dislike a video
-const unlikeUservideo = async (req, res, next) => {
+const unlikeUservideo = async (req, res) => {
   const id = req.user.id;
-  const vdoid = req.params.id;
+  const vdoid = req.params.videoId;
   try {
     const video = await videoModel.findByIdAndUpdate(vdoid, {
       $addToSet: { dislikes: id },

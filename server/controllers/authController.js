@@ -5,8 +5,8 @@ import { configDotenv } from "dotenv";
 
 configDotenv();
 const secretKey = process.env.JWT_SECRET_KEY;
-const GenerateToken = (id) => {
-  return jwt.sign({ id }, secretKey);
+const GenerateToken = async (id) => {
+  return await jwt.sign({ id }, secretKey);
 };
 // Create a user
 const SignUp = async (req, res) => {
