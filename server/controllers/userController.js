@@ -132,8 +132,6 @@ const likeUservideo = async (req, res) => {
 
   try {
     // Log input parameters for debugging
-    console.log(`User ID: ${userId}`);
-    console.log(`Video ID: ${videoId}`);
 
     // Find the video and update it
     const video = await videoModel.findByIdAndUpdate(
@@ -144,9 +142,6 @@ const likeUservideo = async (req, res) => {
       },
       { new: true } // Return the updated document
     );
-
-    // Log video details for debugging
-    console.log("Video after update:", video);
 
     // Check if video was found and updated
     if (video) {
@@ -170,9 +165,6 @@ const likeUservideo = async (req, res) => {
     });
   }
 };
-
-export default likeUservideo;
-
 // dislike a video
 const unlikeUservideo = async (req, res) => {
   const id = req.user.id;
