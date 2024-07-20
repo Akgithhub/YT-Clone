@@ -18,11 +18,11 @@ const app = express();
 Connect_DB(db_url);
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.json());
 app.use(cookieParser());
 // app.use(bodyParser);
-app.use(cors());
 
 // Emdpoints
 app.use("/api/auth", authRouter);

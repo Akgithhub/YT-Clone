@@ -18,7 +18,7 @@ userRouter.put("/update/:id", MiddleWare, updateUser);
 // Delete User
 userRouter.delete("/delete/:id", MiddleWare, deleteUser);
 // Get a User
-userRouter.get("/finduser/:id", MiddleWare, getUser);
+userRouter.get("/finduser/:id",  getUser); ///middlware
 // Subcribe user
 userRouter.put("/sub/:id", MiddleWare, SubscribeUser);
 // unscribe user

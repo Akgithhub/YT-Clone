@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -64,19 +65,93 @@ const Link = styled.span`
 `;
 
 const SignIn = () => {
+  const [name, setname] = useState("");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [email2, setemail2] = useState("");
+  const [password2, setpassword2] = useState("");
+  const handleLogin = async () => {
+    const res = await axios.post("http://localhost:4000/api/auth/signup", {
+      name,
+      email,
+      password,
+    });
+    if (res) {
+      console.log("user signed up successfully", res.data);
+      setname("");
+      setemail("");
+      setpassword("");
+    } else {
+      console.log("errpr while signing up");
+    }
+  };
+  const handleregister = async () => {
+    try {
+      const res = await axios.post("http://localhost:4000/api/auth/signin", {
+        email2,
+        password2,
+      });
+      if (res) {
+        console.log("User signed in successfully", res.data);
+        setemail2("");
+        setpassword2("");
+      }
+    } catch (error) {
+      
+        console.error(error);
+
+    }
+  };
+
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
-        <SubTitle>to continue to LamaTube</SubTitle>
-        <Input placeholder="username" />
-        <Input type="password" placeholder="password" />
-        <Button>Sign in</Button>
+        <SubTitle>to continue to YouTube +</SubTitle>
+        <Input
+          placeholder="email"
+          value={email2}
+          onChange={(e) => {
+            setemail2(e.target.value);
+          }}
+        />
+        
+        <Input
+          type="text"
+          placeholder="password"
+          value={password2}
+          onChange={(e) => {
+            setpassword2(e.target.value);
+          }}
+        />
+        <Button onClick={handleregister}>Sign in</Button>
         <Title>or</Title>
-        <Input placeholder="username" />
-        <Input placeholder="email" />
-        <Input type="password" placeholder="password" />
-        <Button>Sign up</Button>
+        <Input
+          placeholder="username"
+          value={name}
+          required={true}
+          onChange={(e) => {
+            setname(e.target.value);
+          }}
+        />
+        <Input
+          placeholder="email"
+          value={email}
+          required
+          onChange={(e) => {
+            setemail(e.target.value);
+          }}
+        />
+        <Input
+          type="text"
+          placeholder="password"
+          value={password}
+          required
+          onChange={(e) => {
+            setpassword(e.target.value);
+          }}
+        />
+        <Button onClick={handleLogin}>Sign up</Button>
       </Wrapper>
       <More>
         English(USA)
