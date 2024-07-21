@@ -8,34 +8,23 @@ if (!secretKey) {
   throw new Error("JWT_SECRET_KEY is not defined in the environment variables");
 }
 
-const MiddleWare = async (req, res, next) => {
-  try {
-    const token = req.cookies.jwtToken;
-    if (!token) {
-      return res.status(401).json({
-        message: "No token provided, please login first",
-      });
-    }
-
-    const verify = await jwt.verify(token, secretKey);
-    if (!verify) {
-      return res.status(401).json({
-        message: "Invalid token, please login again",
-      });
-    }
-
-    // Attach user info to request
-    // req.user = verify; assigns the decoded token (usually containing user information) to req.user.
-    req.user = verify;
-
-    next();
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Middleware error",
-      error: error.message,
+export const MiddleWare = (req, res, next) => {
+  const token = req.cookies.access_token;
+  if (!token) {
+    res.json({
+      message: "You are not authenticated!",
     });
   }
+
+  jwt.verify(token, secretKey, (err, user) => {
+    if (err) {
+      res.json({
+        message: "Token is not valid!",
+      });
+    }
+    req.user = user;
+    next();
+  });
 };
 
 export default MiddleWare;

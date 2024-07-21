@@ -59,40 +59,31 @@ const Info = styled.div`
   color: ${({ theme }) => theme.textSoft};
 `;
 
-const Card = ({ type, videos }) => {
+const Card = ({ type, video }) => {
   const [channel, setchannel] = useState({});
-  const fetchUser = async () => {
-    const res = await axios.get(
-      `http://localhost:4000/api/user/finduser/${videos.userId}`
-    );
-    try {
-      if (res.data.data) {
-        setchannel(res.data.data);
-        console.log("Fetching card for card page : ", channel);
-      } else {
-        console.log("Error while getting random vdos for card page");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    fetchUser();
-  }, []);
+    const fetchChannel = async () => {
+      const res = await axios.get(
+        `http://localhost:4000/api/user/finduser/${video.userId}`
+      );
+      setchannel(res.data);
+      console.log(res.data);
+    };
+    fetchChannel();
+  }, [video.userId]);
 
   return (
     <Link to="/video/test" style={{ textDecoration: "none" }}>
       <Container type={type}>
-        <Image type={type} src={videos.imgUrl} />
+        <Image type={type} src={video.imgUrl} />
         <Details type={type}>
           <ChannelImage type={type} src={channel.img} />
           <Texts>
-            <Title>{videos.title}</Title>
+            <Title>{video.title}</Title>
 
             <ChannelName>{channel.name}</ChannelName>
             <Info>
-              {videos.views} views • {format(videos.createdAt)}
+              {video.views} views • {format(video.createdAt)}
             </Info>
           </Texts>
         </Details>

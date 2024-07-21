@@ -7,7 +7,7 @@ const authRouter = express.Router();
 // Create a User
 authRouter.post("/signup", SignUp);
 // Sign In
-authRouter.post("/signin", MiddleWare, SignIn);
+authRouter.post("/signin", SignIn);
 // Google Sign In
 authRouter.post("/google");
 

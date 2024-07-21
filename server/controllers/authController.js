@@ -4,10 +4,7 @@ import jwt from "jsonwebtoken";
 import { configDotenv } from "dotenv";
 
 configDotenv();
-const secretKey = process.env.JWT_SECRET_KEY;
-const GenerateToken = async (id) => {
-  return await jwt.sign({ id }, secretKey);
-};
+
 // Create a user
 const SignUp = async (req, res) => {
   const { email, password, name } = req.body;
@@ -45,35 +42,32 @@ const SignUp = async (req, res) => {
 };
 
 // Sign In
-const SignIn = async (req, res) => {
+const SignIn = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const user = await userModel.findOne({ email: email });
-    const matchPass = await bcrypt.compare(password, user.password);
-    if (!matchPass) {
+    const user = await userModel.findOne({ name: req.body.name });
+    if (!user) {
       res.json({
-        message: "Password is incorrect",
+        message: "user not found",
       });
     }
-
-    const Token = await GenerateToken(user._id);
-    if (!Token) {
+    const isCorrect = await bcrypt.compare(req.body.password, user.password);
+    if (!isCorrect) {
       res.json({
-        message: "token not generated",
+        message: "wrong password",
       });
     }
-    res.cookie("jwtToken", Token, { httpOnly: true });
-    res.json({
-      message: "User signed in successfully",
-      data: user,
-      token: Token,
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
+    // const { password, ...others } = user._doc;
+    res.cookie("access_token", token, {
+      httpOnly: true,
     });
-  } catch (error) {
-    console.log(error);
     res.json({
-      message: "Error while signing in user",
-      error: error.message,
+      message: "logged in successfully",
+      user,
+      // token,
     });
+  } catch (err) {
+    next(err);
   }
 };
 // Google Sign In

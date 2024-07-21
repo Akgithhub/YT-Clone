@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { loginFail, loginStart, loginSuccess } from "../redux/userSlice";
+import Cookies from "js-cookie"; // Import js-cookie
 
 const Container = styled.div`
   display: flex;
@@ -65,93 +68,53 @@ const Link = styled.span`
 `;
 
 const SignIn = () => {
-  const [name, setname] = useState("");
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const [email2, setemail2] = useState("");
-  const [password2, setpassword2] = useState("");
-  const handleLogin = async () => {
-    const res = await axios.post("http://localhost:4000/api/auth/signup", {
-      name,
-      email,
-      password,
-    });
-    if (res) {
-      console.log("user signed up successfully", res.data);
-      setname("");
-      setemail("");
-      setpassword("");
-    } else {
-      console.log("errpr while signing up");
-    }
-  };
-  const handleregister = async () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    dispatch(loginStart());
     try {
       const res = await axios.post("http://localhost:4000/api/auth/signin", {
-        email2,
-        password2,
+        name,
+        password,
       });
-      if (res) {
-        console.log("User signed in successfully", res.data);
-        setemail2("");
-        setpassword2("");
-      }
-    } catch (error) {
-      
-        console.error(error);
-
+      dispatch(loginSuccess(res.data));
+      // console.log(res.data);
+    } catch (err) {
+      dispatch(loginFail());
     }
   };
-
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
-        <SubTitle>to continue to YouTube +</SubTitle>
+        <SubTitle>to continue to LamaTube</SubTitle>
         <Input
-          placeholder="email"
-          value={email2}
-          onChange={(e) => {
-            setemail2(e.target.value);
-          }}
+          placeholder="username"
+          onChange={(e) => setName(e.target.value)}
         />
-        
         <Input
-          type="text"
+          type="password"
           placeholder="password"
-          value={password2}
-          onChange={(e) => {
-            setpassword2(e.target.value);
-          }}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <Button onClick={handleregister}>Sign in</Button>
+        <Button onClick={handleLogin}>Sign in</Button>
+        <Title>or</Title>
+        <Button>Signin with Google</Button>
         <Title>or</Title>
         <Input
           placeholder="username"
-          value={name}
-          required={true}
-          onChange={(e) => {
-            setname(e.target.value);
-          }}
+          onChange={(e) => setName(e.target.value)}
         />
+        <Input placeholder="email" onChange={(e) => setEmail(e.target.value)} />
         <Input
-          placeholder="email"
-          value={email}
-          required
-          onChange={(e) => {
-            setemail(e.target.value);
-          }}
-        />
-        <Input
-          type="text"
+          type="password"
           placeholder="password"
-          value={password}
-          required
-          onChange={(e) => {
-            setpassword(e.target.value);
-          }}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <Button onClick={handleLogin}>Sign up</Button>
+        <Button>Sign up</Button>
       </Wrapper>
       <More>
         English(USA)
