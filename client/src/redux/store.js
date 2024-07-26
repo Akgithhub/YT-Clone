@@ -12,7 +12,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { PersistGate } from "redux-persist/integration/react";
+// import { PersistGate } from "redux-persist/integration/react";
 
 // REDUX PERSIST it allows you to save the Redux state to a storage mechanism (such as local storage, session storage, or even more advanced storage solutions) so that the state persists across page reloads. When the application is restarted, the persisted state is rehydrated back into the Redux store.
 

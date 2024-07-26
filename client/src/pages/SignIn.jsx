@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { loginFail, loginStart, loginSuccess } from "../redux/userSlice";
 import Cookies from "js-cookie"; // Import js-cookie
+import { loginFail, loginStart, loginSuccess } from "../redux/userSlice";
 
 const Container = styled.div`
   display: flex;
@@ -72,6 +72,7 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     dispatch(loginStart());
@@ -81,11 +82,31 @@ const SignIn = () => {
         password,
       });
       dispatch(loginSuccess(res.data));
-      // console.log(res.data);
+      localStorage.setItem("jwt-token", res.data.token);
+      Cookies.set("jwt-token", res.data.token); // Set the cookie
     } catch (err) {
       dispatch(loginFail());
     }
   };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    dispatch(loginStart());
+    try {
+      const res = await axios.post("http://localhost:4000/api/auth/signup", {
+        name,
+        password,
+        email,
+      });
+      console.log(res.data);
+      dispatch(loginSuccess(res.data));
+      localStorage.setItem("jwt-token", res.data.token);
+      Cookies.set("jwt-token", res.data.token); // Set the cookie
+    } catch (err) {
+      dispatch(loginFail());
+    }
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -114,7 +135,7 @@ const SignIn = () => {
           placeholder="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button>Sign up</Button>
+        <Button onClick={handleSignup}>Sign up</Button>
       </Wrapper>
       <More>
         English(USA)
