@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const secretKey = process.env.JWT_SECRET_KEY;
+const secretKey = process.env.JWT_TOKEN;
 if (!secretKey) {
   throw new Error("JWT_SECRET_KEY is not defined in the environment variables");
 }

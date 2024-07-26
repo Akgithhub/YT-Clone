@@ -1,40 +1,51 @@
 import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { configDotenv } from "dotenv";
+import createToken from "../helpers/createToken.js";
 
 configDotenv();
 
 // Create a user
 const SignUp = async (req, res) => {
   const { email, password, name } = req.body;
-  const emailExist = await userModel.findOne({ email: email });
+
+  // Check if the user already exists
+  const emailExist = await userModel.findOne({ email });
   if (emailExist) {
-    res.json({
-      message: "User already exist",
+    return res.status(400).json({
+      message: "User already exists",
     });
   }
+
+  // Hash the password
   const salt = await bcrypt.genSalt(10);
   const newPassword = await bcrypt.hash(password, salt);
 
+  // Create user data
   const userData = {
-    name: name,
+    name,
     password: newPassword,
-    email: email,
+    email,
   };
+
   try {
+    // Create a new user
     const newUser = await userModel.create(userData);
 
     if (newUser) {
-      res.json({
+      // Create and set the token, and get the token value
+      const token = createToken({ user: newUser, res });
+
+      // Respond with success message, user data, and token
+      return res.status(201).json({
         message: "User created successfully",
         user: newUser,
+        token, // Include the token in the response
       });
     }
-    await newUser.save();
   } catch (error) {
     console.log(error);
-    res.json({
+    return res.status(500).json({
       message: "Error while signing up",
       error: error.message,
     });
@@ -46,25 +57,25 @@ const SignIn = async (req, res, next) => {
   try {
     const user = await userModel.findOne({ name: req.body.name });
     if (!user) {
-      res.json({
-        message: "user not found",
+      return res.status(404).json({
+        message: "User not found",
       });
     }
+
     const isCorrect = await bcrypt.compare(req.body.password, user.password);
     if (!isCorrect) {
-      res.json({
-        message: "wrong password",
+      return res.status(401).json({
+        message: "Wrong password",
       });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
-    // const { password, ...others } = user._doc;
-    res.cookie("access_token", token, {
-      httpOnly: true,
-    });
+
+    // Create and set the token, and get the token value
+    const token = createToken({ user, res });
+
     res.json({
-      message: "logged in successfully",
+      message: "Logged in successfully",
       user,
-      // token,
+      token, // Include the token in the response
     });
   } catch (err) {
     next(err);
